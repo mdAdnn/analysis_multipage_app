@@ -8,7 +8,6 @@ st.set_page_config(
     page_title="Analysis",
     page_icon="🔎"
 )
-st.markdown("# :blue[Analysis]")
 
 # Connect to database
 def init_connection():
@@ -251,6 +250,6 @@ if uploaded_file is not None:
     }$ 
     '''
     st.write(label)
-    
+
 if __name__ == "__main__":
     main()
