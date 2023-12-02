@@ -1,10 +1,13 @@
 import streamlit as st
-from streamlit_option_menu import option_menu
 import pandas as pd
 import psycopg2
 from datetime import datetime
 
-st.set_page_config(page_title="Analysis", page_icon="🔎")
+st.set_page_config(
+    layout="wide",
+    page_title="Analysis",
+    page_icon="🔎"
+)
 st.markdown("# :blue[Analysis]")
 
 # Connect to database
@@ -21,24 +24,12 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+# File uploader and select boxes in a single row
+file_col, gene_col, diplotype_col, drug_col = st.columns([4, 2, 2, 2])
+
 # File uploader
-uploaded_file = st.file_uploader("Choose a .txt file", type="txt")
-
-# Create the first dropdown for gene symbols
-selected_gene_symbol = option_menu(
-    menu_title=None,
-    options=["Gene Symbol","Diplotype","Drug"],
-    icons=["🧬", "🧬", "💊"],
-    menu_icon="cast",
-    default_index=0,
-    orientation="horizontal",
-)
-
-def process_jsonb_columns(df):
-    for col in df.columns:
-        if isinstance(df[col][0], dict):
-            df[col] = df[col].apply(lambda x: ', '.join([f"{k}: {v}" for k, v in x.items()]))
-    return df
+uploaded_file = file_col.file_uploader("Choose a .txt file", type="txt")
 
 def process_jsonb_columns(df):
     for col in df.columns:
@@ -130,19 +121,61 @@ def execute_custom_query(selected_gene_symbol, selected_diplotypes, selected_dru
         return df
     else:
         return pd.DataFrame()  # Return an empty DataFrame if no query is selected
+
 def main():
     try:
         conn = init_connection()
         cur = conn.cursor()
-        
+
         # Query to get all unique gene symbols from cpic.gene_result table
         cur.execute("SELECT DISTINCT genesymbol FROM cpic.gene_result")
         gene_symbols = ["None"] + [row[0] for row in cur.fetchall()]
-        
 
+        # Create the first dropdown for gene symbols
+        selected_gene_symbol = gene_col.selectbox("Select Gene Symbol", gene_symbols)
+
+        # Query to get all unique diplotypes for the selected gene symbol from cpic.diplotype_phenotype table
+        cur.execute(f"SELECT DISTINCT diplotype->>'{selected_gene_symbol}' AS simplified_diplotype FROM cpic.diplotype_phenotype WHERE jsonb_exists(diplotype, '{selected_gene_symbol}')")
+        diplotypes = [row[0] for row in cur.fetchall()]
+
+        # Create the second dropdown for simplified diplotypes related to the selected gene symbol
+        selected_diplotypes = diplotype_col.selectbox("Select Diplotypes", diplotypes)
+
+        # Create third dropdown for drugs
+        cur.execute("SELECT DISTINCT name FROM cpic.drug")
+        drugs = ["None"] + [row[0] for row in cur.fetchall()]
+        selected_drug = drug_col.selectbox("Select Drug", drugs)
+
+        # Add a submit button
+        if diplotype_col.button("Submit"):
+            # Execute the custom query with the selected drug name
+            result_df = execute_custom_query(selected_gene_symbol, selected_diplotypes, selected_drug)
+
+            # Check if the DataFrame is not empty before processing
+            if not result_df.empty:
+                # Process JSONB columns
+                result_df = process_jsonb_columns(result_df)
+
+            # Check if there are results to add to the HTML report
+            if not result_df.empty:
+                # Add the result DataFrame to the HTML report with styling to fit the page
+                html_report = f"<a name='{selected_gene_symbol}_{selected_diplotypes}'></a>\n"
+                html_report += f"<h3>Results for  {selected_gene_symbol}, {selected_diplotypes}</h3>\n"
+                html_report += "<div style='overflow-x:auto;'>\n"
+                html_report += result_df.to_html(index=False, escape=False, classes='report-table', table_id='report-table', justify='center')
+                html_report = html_report.replace('<th>', '<th style="background-color: #ADD8E6; color: black;">')
+                html_report += "\n"
+                html_report += "</div>\n"
+
+                # Display the HTML report
+                st.markdown(html_report, unsafe_allow_html=True)
+            
+            else:
+                st.warning(f"No results found for Genesymbol: {selected_gene_symbol}, Diplotype: {selected_diplotypes}")
 
     except Exception as e:
-        st.error(f"An error occurred: {e}")
+        st.error(f"Error: {str(e)}")
+
     finally:
         # Close cursor and connection
         cur.close()
@@ -218,5 +251,6 @@ if uploaded_file is not None:
     }$ 
     '''
     st.write(label)
+    
 if __name__ == "__main__":
     main()
