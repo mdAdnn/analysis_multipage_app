@@ -48,9 +48,13 @@ def execute_custom_query(selected_gene_symbol, selected_diplotypes, selected_dru
         # Construct the SQL query for gene symbol, diplotypes, and drug
         sql_query = f"""
             SELECT DISTINCT ON (p.drugid)
-                dp.*,
+                dp.diplotype,
+                r.activityscore,
+                r.phenotypes,
+                dp.ehrpriority,
                 p.drugid,
                 dr.name,
+                r.population,
                 r.drugrecommendation,
                 r.classification
             FROM cpic.gene_result_diplotype d
@@ -59,9 +63,10 @@ def execute_custom_query(selected_gene_symbol, selected_diplotypes, selected_dru
             JOIN cpic.pair p ON gr.genesymbol = p.genesymbol
             JOIN cpic.drug dr ON p.drugid = dr.drugid
             JOIN cpic.recommendation r ON dr.drugid = r.drugid
-            JOIN cpic.diplotype_phenotype dp ON r.phenotypes = dp.phenotype
+            JOIN cpic.diplotype_phenotype dp ON r.phenotypes @> dp.phenotype
             WHERE dp.diplotype ->> '{selected_gene_symbol}' = '{selected_diplotypes}'
                 AND dr.name = '{selected_drug}'
+                AND r.activityscore @> dp.activityscore
                 AND r.classification <> 'No Recommendation'
                 AND r.drugrecommendation <> 'No recommendation'
             ORDER BY p.drugid, r.classification;
@@ -70,9 +75,13 @@ def execute_custom_query(selected_gene_symbol, selected_diplotypes, selected_dru
         # Construct the SQL query for gene symbol and diplotypes without filtering by drug name
         sql_query = f"""
             SELECT DISTINCT ON (p.drugid)
-                dp.*,
+                dp.diplotype,
+                r.activityscore,
+                r.phenotypes,
+                dp.ehrpriority,
                 p.drugid,
                 dr.name,
+                r.population,
                 r.drugrecommendation,
                 r.classification
             FROM cpic.gene_result_diplotype d
@@ -81,8 +90,9 @@ def execute_custom_query(selected_gene_symbol, selected_diplotypes, selected_dru
             JOIN cpic.pair p ON gr.genesymbol = p.genesymbol
             JOIN cpic.drug dr ON p.drugid = dr.drugid
             JOIN cpic.recommendation r ON dr.drugid = r.drugid
-            JOIN cpic.diplotype_phenotype dp ON r.phenotypes = dp.phenotype
+            JOIN cpic.diplotype_phenotype dp ON r.phenotypes @> dp.phenotype
             WHERE dp.diplotype ->> '{selected_gene_symbol}' = '{selected_diplotypes}'
+                AND r.activityscore @> dp.activityscore
                 AND r.classification <> 'No Recommendation'
                 AND r.drugrecommendation <> 'No recommendation'
             ORDER BY p.drugid, r.classification;
@@ -154,6 +164,19 @@ def main():
             if not result_df.empty:
                 # Process JSONB columns
                 result_df = process_jsonb_columns(result_df)
+
+            # End the report with reduced font size
+            label = """
+            <div style='text-align: justify; font-size:10px'>
+            <strong>Disclaimer:</strong><br>
+            Genotypes were called using Aldy, Actionable drug interactions were collected from CPIC database.<br>
+            The recommendations provided in this report are generated based on the available data and algorithms. It is crucial to note that these recommendations should only be considered as supplementary information and not as a substitute for professional medical advice. This report is intended for use by qualified healthcare professionals, and decisions regarding patient care should be made in consultation with a licensed medical practitioner. The information presented here may not encompass all aspects of an individual's medical history or current health condition.<br>
+            The developers and providers of this report disclaim any liability for the accuracy, completeness, or usefulness of the recommendations, and they are not responsible for any adverse consequences resulting from the use of this information.<br>
+            Patients and healthcare providers are encouraged to exercise their professional judgment and consider individual patient characteristics when making medical decisions.
+            </div>
+            """
+
+            st.markdown(label, unsafe_allow_html=True)
 
             # Check if there are results to add to the HTML report
             if not result_df.empty:
@@ -241,15 +264,19 @@ if uploaded_file is not None:
     # Display the entire HTML report
     st.markdown(html_report, unsafe_allow_html=True)
     st.write("#")
-    # End the report with reduced font size
-    st.write("###### End of Report")
 
-    label = r'''
-    $\text {
-        \scriptsize Genotypes were called using Aldy, Actionable drug interactions were collected from CPIC database.
-    }$ 
-    '''
-    st.write(label)
+    # End the report with reduced font size
+    label = """
+    <div style='text-align: justify; font-size:10px'>
+    <strong>Disclaimer:</strong><br>
+    Genotypes were called using Aldy, Actionable drug interactions were collected from CPIC database.<br>
+    The recommendations provided in this report are generated based on the available data and algorithms. It is crucial to note that these recommendations should only be considered as supplementary information and not as a substitute for professional medical advice. This report is intended for use by qualified healthcare professionals, and decisions regarding patient care should be made in consultation with a licensed medical practitioner. The information presented here may not encompass all aspects of an individual's medical history or current health condition.<br>
+    The developers and providers of this report disclaim any liability for the accuracy, completeness, or usefulness of the recommendations, and they are not responsible for any adverse consequences resulting from the use of this information.<br>
+    Patients and healthcare providers are encouraged to exercise their professional judgment and consider individual patient characteristics when making medical decisions.
+    </div>
+    """
+
+    st.markdown(label, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
