@@ -1,0 +1,8 @@
+name: Mohammed Naeem
+id: 10005042
+genesymbol,diplotype
+CYP2D6,*19/*38
+TPMT,*1/*11
+SLCO1B1,*1/*14
+CYP2B6,*5/*38
+CYP3A5,*6/*7
