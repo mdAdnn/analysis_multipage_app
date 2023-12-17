@@ -265,6 +265,18 @@ if uploaded_file is not None:
     st.markdown(html_report, unsafe_allow_html=True)
     st.write("#")
 
+    # Note
+    note = """
+    <div style='text-align: justify; font-size:14px'>
+    <strong>Note:</strong><br>
+    For more detailed recommndations combinations, kindly refer next page "Combinations".
+    </div>
+    """
+
+    st.markdown(note, unsafe_allow_html=True)
+
+    st.write("#")
+
     # End the report with reduced font size
     label = """
     <div style='text-align: justify; font-size:10px'>
