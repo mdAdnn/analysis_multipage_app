@@ -19,8 +19,8 @@ st.markdown('''
 
 # BEGIN: ed8c6549bwf9
 st.code('''
-    name: XXXXXXXX
-    id: XXXXXXXX
+    name: John Doe
+    id: 123456
     genesymbol,diplotype
     CYP2D6,*19/*38
     CYP2C9,*2/*4
@@ -49,3 +49,5 @@ st.markdown('''
     - After selecting the **Diplotypes**, you can click **Submit** to see all the possible drug recommendations for the selected gene and its diplotype.
     - You can also select the **Drug** from the dropdown menu to see the recommendations for the selected drug.
 ''')
+
+st.write("For further assistance, kindly contact us at [fcb.adnan10@gmail.com](mailto:)")
