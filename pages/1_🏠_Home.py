@@ -206,9 +206,12 @@ def main():
         st.error(f"Error: {str(e)}")
 
     finally:
-        # Close cursor and connection
-        cur.close()
-        conn.close()
+        # Close cursor and connection if they are defined
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
+
 
 if uploaded_file is not None:
     # Read the content of the file and decode bytes to string
