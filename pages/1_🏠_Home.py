@@ -17,7 +17,7 @@ def init_connection():
 st.markdown(
     """
     <div style='display: flex; background-color: #ADD8E6; padding: 10px; border-radius: 10px;'>
-        <h1 style='margin-right: 20px; color: purple;'>Pharmacogenomic Analysis</h1>
+        <h1 style='margin-right: 20px; color: purple;'>PGxAnalyzer</h1>
         <img src='https://www.hbku.edu.qa/sites/default/files/media/images/hbku_2021.svg' style='align-self: flex-end; width: 200px; margin-left: auto;'>
     </div>
     """,
@@ -29,6 +29,13 @@ file_col, gene_col, diplotype_col, drug_col = st.columns([4, 2, 2, 2])
 
 # File uploader
 uploaded_file = file_col.file_uploader("Choose a .txt file", type="txt")
+
+# Note:
+st.write("#")
+st.write('''
+        **Note:** Kindly use a masked 'Name' and 'ID' for confidentiality and security reasons while using real patients data.
+        If there are combinations of phenotypes in the recommendation output file kindly refer next page **'Combinations'** (example for genes such as ***CYP2C19, CYP2B6, TPMT, CYP2D6*** or the drugs such as ***Sertraline, Amitriptyline, Clomipramine, Doxepin*** ) for more detailed recommendations.
+''')
 
 def process_jsonb_columns(df):
     for col in df.columns:
@@ -222,9 +229,9 @@ if uploaded_file is not None:
     queried_genes = []  # Move the initialization here
 
     # Display name, id, and timestamp at the top
-    st.write(f"Name: {name}")
-    st.write(f"ID: {user_id}")
-    st.write(f"Timestamp: {timestamp}")
+    st.write(f"**Name:** {name}")
+    st.write(f"**ID:** {user_id}")
+    st.write(f"**Timestamp:** {timestamp}")
 
     # Initialize a list to store gene symbols with strong classification
     strong_classification_genes = []
@@ -249,6 +256,7 @@ if uploaded_file is not None:
 
                 # Add the result DataFrame to the HTML report
                 html_report += f"<h3>Results for {genesymbol}, {diplotype}</h3>\n"
+                # Highlight the "name" column if it contains any of the specified drugs
                 html_report += result_df.to_html(index=False, escape=False, classes='report-table', table_id=f'report-table-{genesymbol}_{diplotype}', justify='center') 
                 html_report = html_report.replace('<th>', '<th style="background-color: #ADD8E6; color: black;">')
                 html_report += "\n"
@@ -260,35 +268,27 @@ if uploaded_file is not None:
                 
                     # Add the gene symbol and diplotype as a tuple to the list
                     strong_classification_genes.append((genesymbol, diplotype))
+                
+                # Add a space after each result
+                html_report += "<br>\n"
+ 
+
 
     # Display the entire HTML report
     st.markdown(html_report, unsafe_allow_html=True)
     st.write("#")
 
-    # Note
-    note = """
-    <div style='text-align: justify; font-size:14px'>
-    <strong>Note:</strong><br>
-    For more detailed recommndations combinations, kindly refer next page "Combinations".
-    </div>
-    """
-
-    st.markdown(note, unsafe_allow_html=True)
-
-    st.write("#")
-
-    # End the report with reduced font size
-    label = """
+    # Disclaimer text
+    disclaimer = """
     <div style='text-align: justify; font-size:10px'>
-    <strong>Disclaimer:</strong><br>
-    Genotypes were called using Aldy, Actionable drug interactions were collected from CPIC database.<br>
+    Disclaimer:<br>
     The recommendations provided in this report are generated based on the available data and algorithms. It is crucial to note that these recommendations should only be considered as supplementary information and not as a substitute for professional medical advice. This report is intended for use by qualified healthcare professionals, and decisions regarding patient care should be made in consultation with a licensed medical practitioner. The information presented here may not encompass all aspects of an individual's medical history or current health condition.<br>
     The developers and providers of this report disclaim any liability for the accuracy, completeness, or usefulness of the recommendations, and they are not responsible for any adverse consequences resulting from the use of this information.<br>
     Patients and healthcare providers are encouraged to exercise their professional judgment and consider individual patient characteristics when making medical decisions.
     </div>
     """
 
-    st.markdown(label, unsafe_allow_html=True)
+    st.markdown(disclaimer, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()

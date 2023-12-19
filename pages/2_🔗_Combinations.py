@@ -16,7 +16,7 @@ def init_connection():
 st.markdown(
     """
     <div style='display: flex; background-color: #ADD8E6; padding: 10px; border-radius: 10px;'>
-        <h1 style='margin-right: 20px; color: purple;'>Phenotypic Combinations</h1>
+        <h1 style='margin-right: 20px; color: purple;'>PGxAnalyzer</h1>
         <img src='https://www.hbku.edu.qa/sites/default/files/media/images/hbku_2021.svg' style='align-self: flex-end; width: 200px; margin-left: auto;'>
     </div>
     """,
@@ -32,7 +32,7 @@ def process_jsonb_columns(df):
             df[col] = df[col].apply(lambda x: ', '.join([f"{k}: {v}" for k, v in x.items()]))
     return df
 
-st.write("There are various combinations of phenotypes that are similar to each other. The following table shows all the available recommendations for each phenotype combination. The values might look same but there are some differences in the other columns.")
+st.write("**Note:** There are various phenotypic combinations that have similar Drug recommendations. The table below lists all of the suggestions for each phenotypic combination. Kindly refer to the results based on your actual phenotype combination.")
 st.markdown('If you need further deatils of the similar recommendations, kindly contact us at [fcb.adnan10@gmail.com](mailto:)')
 
 def execute_custom_query(selected_gene_symbol, selected_diplotypes, selected_drug):
@@ -197,7 +197,7 @@ def main():
     disclaimer = """
     <div style='text-align: justify; font-size:10px'>
     Disclaimer:<br>
-    The recommendations provided in this report are generated based on the available data and algorithms. It is crucial to note that these recommendations should only be considered as supplementary information and not as a substitute for professional medical advice. This report is intended for use by qualified healthcare professionals, and decisions regarding patient care should be made in consultation with a licensed medical practitioner. The information presented here may not encompass all aspects of an individual's medical history or current health condition.<br>
+    The recommendations provided in this report are generated based on literature and intended only for research pursposes. It is crucial to note that these recommendations should only be considered as supplementary information and not as a substitute for professional medical advice. This report is intended for use by qualified healthcare professionals, and decisions regarding patient care should be made in consultation with a licensed medical practitioner. The information presented here may not encompass all aspects of an individual's medical history or current health condition.<br>
     The developers and providers of this report disclaim any liability for the accuracy, completeness, or usefulness of the recommendations, and they are not responsible for any adverse consequences resulting from the use of this information.<br>
     Patients and healthcare providers are encouraged to exercise their professional judgment and consider individual patient characteristics when making medical decisions.
     </div>

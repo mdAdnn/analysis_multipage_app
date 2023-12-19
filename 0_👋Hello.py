@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import psycopg2
 from datetime import datetime
+import base64
 
 # Set page configuration
 st.set_page_config(
@@ -26,9 +27,22 @@ st.markdown(
     - Understanding the genetic basis of drug response is a key step towards precision medicine.
     - PGxAnalyzer aims to predict the response of a drug given the genetic profile of a patient. 
     - This web app allows you to upload a file containing the genetic profile of a patient and returns the drug recommendations for the desired star allele.
+    - Kindly use a masked 'Name' and 'ID' for confidentiality and security reasons while using real patients data.
+    - If there are combinations of phenotypes in the recommendation output while making a query on **Home Page** kindly refer next page **'Combinations'** (example for genes such as ***CYP2C19, CYP2B6, TPMT, CYP2D6*** etc.) for more detailed recommendations.
+    - You can also download the sample text file below which can be used to upload on **Home Page** and get a better understanding of the system.
     - Check out the **Help** page for more information.
 """
 )
+
+# Function to create a download link
+if st.button("Sample text file"):
+    # Read input text file
+    with open("sample data\input_values.txt", "r") as file:
+        input_text = file.read()
+
+    # Create a download link
+    href = f'<a href="data:text/plain;base64,{base64.b64encode(input_text.encode()).decode()}" download="input_values.txt">Download Sample File</a>'
+    st.markdown(href, unsafe_allow_html=True)
 
 # Sample data
 if st.button("Sample data"):
@@ -61,9 +75,9 @@ if st.button("Sample data"):
     queried_genes = []  # Move the initialization here
 
     # Display name, id, and timestamp at the top
-    st.write(f"Name: {name}")
-    st.write(f"ID: {user_id}")
-    st.write(f"Timestamp: {timestamp}")
+    st.write(f"**Name:** {name}")
+    st.write(f"**ID:** {user_id}")
+    st.write(f"**Timestamp:** {timestamp}")
 
     # Initialize a list to store gene symbols with strong classification
     strong_classification_genes = []
@@ -134,6 +148,9 @@ if st.button("Sample data"):
 
                     # Add the gene symbol and diplotype as a tuple to the list
                     strong_classification_genes.append((genesymbol, diplotype))
+
+                # Add a space after each result
+                html_report += "<br>\n"
 
     # Close the database connection
     conn.close()
