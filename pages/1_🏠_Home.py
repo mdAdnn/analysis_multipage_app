@@ -133,7 +133,6 @@ def execute_custom_query(selected_gene_symbol, selected_diplotypes, selected_dru
 
     # Execute the SQL query
     if sql_query:
-        conn = init_connection()
         cur = conn.cursor()
         cur.execute(sql_query)
 
@@ -149,7 +148,6 @@ def execute_custom_query(selected_gene_symbol, selected_diplotypes, selected_dru
 
 def main():
     try:
-        conn = init_connection()
         cur = conn.cursor()
 
         # Query to get all unique gene symbols from cpic.gene_result table
@@ -218,8 +216,7 @@ def main():
         # Close cursor and connection if they are defined
         if cur:
             cur.close()
-        if conn:
-            conn.close()
+
 
 
 if uploaded_file is not None:

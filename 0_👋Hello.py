@@ -95,7 +95,6 @@ if st.button("Sample data"):
 
 
     # Connect to your PostgreSQL database (assuming you have a connection established)
-    conn = init_connection()
     cur = conn.cursor()
 
     # Execute the SQL query for each pair of genesymbol and diplotype
