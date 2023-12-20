@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import psycopg2
+import os
 from datetime import datetime
 
 st.set_page_config(
@@ -11,7 +12,14 @@ st.set_page_config(
 
 # Connect to database
 def init_connection():
-    return psycopg2.connect(**st.secrets["postgres"])
+    postgres_params = {
+        "host": os.environ.get("PG_HOST"),
+        "port": os.environ.get("PG_PORT"),
+        "dbname": os.environ.get("PG_DBNAME"),
+        "user": os.environ.get("PG_USER"),
+        "password": os.environ.get("PG_PASSWORD"),
+    }
+    return psycopg2.connect(**postgres_params)
 
 # Custom Streamlit app header
 st.markdown(
