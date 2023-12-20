@@ -35,7 +35,7 @@ st.write("## How to see the possible combinations and recommendations?")
 st.markdown("- Select the desired **Gene Symbol** from the dropdown menu.")
 
 # Add the image for selecting the gene symbol
-st.image("images\select gene symbol.png")
+st.image("images/select gene symbol.png")
 
 st.markdown('''
     - After selecting the **Gene Symbol**, list of **Diplotypes** associated with the genotype will be shown in the dropdown menu.
@@ -43,7 +43,7 @@ st.markdown('''
 ''')
 
 # Add the image for selecting the diplotypes
-st.image("images\select diplotype.png")
+st.image("images/select diplotype.png")
 
 st.markdown('''
     - After selecting the **Diplotypes**, you can click **Submit** to see all the possible drug recommendations for the selected gene and its diplotype.

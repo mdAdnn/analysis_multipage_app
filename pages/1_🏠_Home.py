@@ -10,16 +10,17 @@ st.set_page_config(
     page_icon="🔎"
 )
 
-# Connect to database
-def init_connection():
-    postgres_params = {
-        "host": os.environ.get("PG_HOST"),
-        "port": os.environ.get("PG_PORT"),
-        "dbname": os.environ.get("PG_DBNAME"),
-        "user": os.environ.get("PG_USER"),
-        "password": os.environ.get("PG_PASSWORD"),
-    }
-    return psycopg2.connect(**postgres_params)
+# Access PostgreSQL credentials from secrets.toml
+postgres_secrets = st.secrets["postgres"]
+
+# Use the credentials in your PostgreSQL connection
+db_username = postgres_secrets["username"]
+db_password = postgres_secrets["password"]
+db_host = postgres_secrets["host"]
+db_port = postgres_secrets["port"]
+db_name = postgres_secrets["database"]
+
+conn = psycopg2.connect(user=db_username, password=db_password, host=db_host, port=db_port, database=db_name)
 
 # Custom Streamlit app header
 st.markdown(
