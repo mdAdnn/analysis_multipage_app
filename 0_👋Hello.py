@@ -11,9 +11,14 @@ st.set_page_config(
     page_icon="💊",
 )
 
-# Connect to database
-def init_connection():
-    return psycopg2.connect(**st.secrets["postgres"])
+# Connect to the PostgreSQL server
+conn = psycopg2.connect(
+    host="host.docker.internal",
+    port=5432,
+    dbname="postgres",
+    user="postgres",
+    password="adnan"
+)
 
 # Welcome message
 st.write("# Welcome to PGxAnalyzer")
