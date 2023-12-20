@@ -47,7 +47,7 @@ if st.button("Sample text file"):
 # Sample data
 if st.button("Sample data"):
     # Read input text file
-    with open("sample data\input_values.txt", "r") as file:
+    with open("sample data/input_values.txt", "r") as file:
         input_text = file.read()
 
     def process_jsonb_columns(df):
