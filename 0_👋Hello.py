@@ -37,7 +37,7 @@ st.markdown(
 # Function to create a download link
 if st.button("Sample text file"):
     # Read input text file
-    with open("sample data\input_values.txt", "r") as file:
+    with open("sample data/input_values.txt", "r") as file:
         input_text = file.read()
 
     # Create a download link
