@@ -11,9 +11,17 @@ st.set_page_config(
     page_icon="💊",
 )
 
-# Connect to database
-def init_connection():
-    return psycopg2.connect(**st.secrets["postgres"])
+# Access PostgreSQL credentials from secrets.toml
+postgres_secrets = st.secrets["postgres"]
+
+# Use the credentials in your PostgreSQL connection
+db_username = postgres_secrets["username"]
+db_password = postgres_secrets["password"]
+db_host = postgres_secrets["host"]
+db_port = postgres_secrets["port"]
+db_name = postgres_secrets["database"]
+
+conn = psycopg2.connect(user=db_username, password=db_password, host=db_host, port=db_port, database=db_name)
 
 # Welcome message
 st.write("# Welcome to PGxAnalyzer")
