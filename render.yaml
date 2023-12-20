@@ -1,0 +1,11 @@
+deploy:
+  - source: .env
+    dest: /app/.env
+  - source: pages/*.py
+    dest: /app/pages/
+  - source: sample data/
+    dest: /app/sample data/
+  - source: 0_👋Hello.py
+    dest: /app/0_👋Hello.py
+  - source: requirements.txt
+    dest: /app/requirements.txt
