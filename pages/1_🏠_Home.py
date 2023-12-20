@@ -14,7 +14,7 @@ st.set_page_config(
 postgres_secrets = st.secrets["postgres"]
 
 # Use the credentials in your PostgreSQL connection
-db_username = postgres_secrets["username"]
+db_username = postgres_secrets["user"]
 db_password = postgres_secrets["password"]
 db_host = postgres_secrets["host"]
 db_port = postgres_secrets["port"]
