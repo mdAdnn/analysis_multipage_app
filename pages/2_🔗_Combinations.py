@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import psycopg2
+import os
 
 st.set_page_config(
     layout="wide",
@@ -8,15 +9,11 @@ st.set_page_config(
     page_icon="link-45deg",
 )
 
-# Access PostgreSQL credentials from secrets.toml
-postgres_secrets = st.secrets["postgres"]
-
-# Use the credentials in your PostgreSQL connection
-db_username = postgres_secrets["user"]
-db_password = postgres_secrets["password"]
-db_host = postgres_secrets["host"]
-db_port = postgres_secrets["port"]
-db_name = postgres_secrets["database"]
+db_username = os.getenv("DB_USERNAME")
+db_password = os.getenv("DB_PASSWORD")
+db_host = os.getenv("DB_HOST")
+db_port = os.getenv("DB_PORT")
+db_name = os.getenv("DB_NAME")
 
 conn = psycopg2.connect(user=db_username, password=db_password, host=db_host, port=db_port, database=db_name)
 
