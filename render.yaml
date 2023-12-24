@@ -7,9 +7,9 @@ deploy:
     dest: /app/pages/
   - source: sample data/
     dest: /app/sample data/
-  - source: 0_👋Hello.py
-    dest: /app/0_👋Hello.py
+  - source: app.py
+    dest: /app/app.py
   - source: requirements.txt
     dest: /app/requirements.txt
 
-startCommand: "/app/.streamlit/bin/activate && streamlit run /app/0_👋Hello.py"
+
