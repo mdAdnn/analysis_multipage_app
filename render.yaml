@@ -12,5 +12,4 @@ deploy:
   - source: requirements.txt
     dest: /app/requirements.txt
 
-
-
+startCommand: "/app/.streamlit/bin/activate && streamlit run /app/0_👋Hello.py"
