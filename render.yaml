@@ -1,3 +1,5 @@
+buildCommand: "mkdir -p /app/.streamlit && cp .env /app/.streamlit/ && pip install --upgrade pip && pip install -r requirements.txt"
+
 deploy:
   - source: .env
     dest: /app/.env
