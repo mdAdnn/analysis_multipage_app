@@ -12,4 +12,4 @@ deploy:
   - source: requirements.txt
     dest: /app/requirements.txt
 
-startCommand: "C:\\Users\\fcbwa\\OneDrive\\Desktop\\analysis_multipage_app\\.venv\\Scripts\\streamlit run /app/app.py"
+startCommand: "streamlit run app.py"
