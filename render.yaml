@@ -11,3 +11,4 @@ deploy:
     dest: /app/0_👋Hello.py
   - source: requirements.txt
     dest: /app/requirements.txt
+startCommand: "streamlit run /app/0_👋Hello.py"
