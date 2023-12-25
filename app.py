@@ -18,6 +18,12 @@ db_host = os.getenv("DB_HOST")
 db_port = os.getenv("DB_PORT")
 db_name = os.getenv("DB_NAME")
 
+print(f"DB_USERNAME: {db_username}")
+print(f"DB_PASSWORD: {db_password}")
+print(f"DB_HOST: {db_host}")
+print(f"DB_PORT: {db_port}")
+print(f"DB_NAME: {db_name}")
+
 conn = psycopg2.connect(
     user=db_username,
     password=db_password,
