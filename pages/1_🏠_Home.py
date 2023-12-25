@@ -16,7 +16,13 @@ db_host = os.getenv("DB_HOST")
 db_port = os.getenv("DB_PORT")
 db_name = os.getenv("DB_NAME")
 
-conn = psycopg2.connect(user=db_username, password=db_password, host=db_host, port=db_port, database=db_name)
+conn = psycopg2.connect(
+    user=db_username,
+    password=db_password,
+    host=db_host,
+    port=db_port,
+    database=db_name
+)
 
 # Custom Streamlit app header
 st.markdown(
