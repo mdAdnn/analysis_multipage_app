@@ -4,6 +4,7 @@ import psycopg2
 from datetime import datetime
 import base64
 import os
+from dotenv import load_dotenv
 
 # Set page configuration
 st.set_page_config(
