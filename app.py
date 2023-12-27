@@ -7,7 +7,7 @@ import os
 from dotenv import load_dotenv
 
 # Load environment variables from .env
-load_dotenv(.env)
+load_dotenv(".env")
 
 # Set page configuration
 st.set_page_config(
