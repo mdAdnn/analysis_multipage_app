@@ -16,25 +16,18 @@ st.set_page_config(
     page_icon="💊",
 )
 
-db_username = os.getenv("DB_USERNAME")
-db_password = os.getenv("DB_PASSWORD")
-db_host = os.getenv("DB_HOST")
-db_port = os.getenv("DB_PORT")
-db_name = os.getenv("DB_NAME")
 
-print(f"DB_USERNAME: {db_username}")
-print(f"DB_PASSWORD: {db_password}")
-print(f"DB_HOST: {db_host}")
-print(f"DB_PORT: {db_port}")
-print(f"DB_NAME: {db_name}")
+# Retrieve the DATABASE_URL from the environment
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
-conn = psycopg2.connect(
-    user=db_username,
-    password=db_password,
-    host=db_host,
-    port=db_port,
-    database=db_name
-)
+# Check if the database URL is set
+if DATABASE_URL is None:
+    st.error("DATABASE_URL environment variable is not set.")
+else:
+    # Use the database connection
+    st.success(f"Connected to database: {DATABASE_URL}")
+
+conn = psycopg2.connect(DATABASE_URL)
 
 # Welcome message
 st.write("# Welcome to PGxAnalyzer")
