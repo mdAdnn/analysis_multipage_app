@@ -6,6 +6,9 @@ import base64
 import os
 from dotenv import load_dotenv
 
+# Load environment variables from .env
+load_dotenv()
+
 # Set page configuration
 st.set_page_config(
     layout="wide",

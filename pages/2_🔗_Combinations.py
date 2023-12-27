@@ -2,6 +2,10 @@ import streamlit as st
 import pandas as pd
 import psycopg2
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
 
 st.set_page_config(
     layout="wide",
