@@ -7,7 +7,7 @@ import os
 from dotenv import load_dotenv
 
 # Load environment variables from .env
-load_dotenv()
+load_dotenv(".env")
 
 # Set page configuration
 st.set_page_config(
@@ -18,7 +18,7 @@ st.set_page_config(
 
 
 # Retrieve the DATABASE_URL from the environment
-DATABASE_URL = os.environ.get("postgres://adnan:l6V18kVwVJEiIazMqqXersYU7JFpdzu3@dpg-cm5si38cmk4c73crqpt0-a.oregon-postgres.render.com/cpic_c8s0")
+DATABASE_URL = os.environ.get("db_url")
 # Print debug information
 st.write(f"DATABASE_URL: {DATABASE_URL}")
 
