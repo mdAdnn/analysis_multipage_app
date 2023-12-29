@@ -16,7 +16,6 @@ st.set_page_config(
     page_icon="💊",
 )
 
-
 # Retrieve the DATABASE_URL from the environment
 DATABASE_URL = os.environ.get("db_url")
 
@@ -25,7 +24,7 @@ if DATABASE_URL is None:
     st.error("DATABASE_URL environment variable is not set.")
 else:
     # Use the database connection
-    st.success(f"Connected to database: {DATABASE_URL}")
+    st.success(f"Connected to database")
 
 conn = psycopg2.connect(DATABASE_URL)
 
