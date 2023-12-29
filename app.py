@@ -19,9 +19,6 @@ st.set_page_config(
 
 # Retrieve the DATABASE_URL from the environment
 DATABASE_URL = os.environ.get("db_url")
-# DATABASE_URL = os.environ.get("DATABASE_URL")
-# Print debug information
-st.write(f"DATABASE_URL: {DATABASE_URL}")
 
 # Check if the database URL is set
 if DATABASE_URL is None:
@@ -31,7 +28,6 @@ else:
     st.success(f"Connected to database: {DATABASE_URL}")
 
 conn = psycopg2.connect(DATABASE_URL)
-st.write(os.environ.get("DATABASE_URL"))
 
 # Welcome message
 st.write("# Welcome to PGxAnalyzer")
