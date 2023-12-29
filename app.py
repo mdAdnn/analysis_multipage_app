@@ -19,6 +19,7 @@ st.set_page_config(
 
 # Retrieve the DATABASE_URL from the environment
 DATABASE_URL = os.environ.get("db_url")
+# DATABASE_URL = os.environ.get("DATABASE_URL")
 # Print debug information
 st.write(f"DATABASE_URL: {DATABASE_URL}")
 
