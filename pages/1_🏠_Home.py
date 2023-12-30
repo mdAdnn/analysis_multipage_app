@@ -41,6 +41,7 @@ file_col, gene_col, diplotype_col, drug_col = st.columns([4, 2, 2, 2])
 uploaded_file = file_col.file_uploader("Choose a .txt file", type="txt")
 
 # Note:
+st.write("On this page you can upload a text file containing the genetic information of a patient and returns the drug recommendations for the desired star allele. In the dropdown menu you can select the gene symbol and diplotype for which you want to get the recommendations. You can also select a drug name (optional) to filter the results by drug name.")
 st.write("#")
 st.write('''
         **Note:** Kindly use a masked 'Name' and 'ID' for confidentiality and security reasons while using real patients data.
