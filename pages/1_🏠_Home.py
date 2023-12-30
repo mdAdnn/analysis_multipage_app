@@ -41,8 +41,14 @@ file_col, gene_col, diplotype_col, drug_col = st.columns([4, 2, 2, 2])
 uploaded_file = file_col.file_uploader("Choose a .txt file", type="txt")
 
 # Note:
-st.write("On this page you can upload a text file containing the genetic information of a patient and returns the drug recommendations for the desired star allele. In the dropdown menu you can select the gene symbol and diplotype for which you want to get the recommendations. You can also select a drug name (optional) to filter the results by drug name.")
 st.write("#")
+st.write('''
+         On this page you can upload a text file containing the genetic information of a patient in the following format: **"name"**, **"id"**, **"gene symbol"**, **"diplotype"** (separated by a comma).
+         The file should contain one gene symbol and diplotype per line. The app will return the drug recommendations for the desired star allele.
+         In the dropdown menu you can select the gene symbol and diplotype for which you want to get the recommendations. You can also select a drug name (optional) to filter the results by drug name.
+         You can also just check the recommendations of specific drug by only selecting the drug name and make sure the gene symbol is selected as "None".
+         To get a better understanding of the system kindly download the sample text file from **"main page"** and upload it on **Home Page**.
+''')
 st.write('''
         **Note:** Kindly use a masked 'Name' and 'ID' for confidentiality and security reasons while using real patients data.
         If there are combinations of phenotypes in the recommendation output file kindly refer next page **'Combinations'** (example for genes such as ***CYP2C19, CYP2B6, TPMT, CYP2D6*** or the drugs such as ***Sertraline, Amitriptyline, Clomipramine, Doxepin*** ) for more detailed recommendations.
@@ -167,7 +173,7 @@ def main():
         selected_diplotypes = diplotype_col.selectbox("Select Diplotypes", diplotypes)
 
         # Create third dropdown for drugs
-        cur.execute("SELECT DISTINCT name FROM cpic.drug")
+        cur.execute("SELECT DISTINCT name FROM cpic.drug where name IN ('efavirenz','sertraline','trimipramine','lansoprazole','citalopram','clomipramine','escitalopram','doxepin','pantoprazole','imipramine','amitriptyline','omeprazole','dexlansoprazole','fluvastatin','fosphenytoin','phenytoin','celecoxib','lornoxicam','tenoxicam','meloxicam','flurbiprofen','ibuprofen','piroxicam','tamoxifen','tramadol','vortioxetine','codeine','desipramine','paroxetine','atomoxetine','venlafaxine','fluvoxamine','hydrocodone','nortriptyline','tacrolimus','mercaptopurine','thioguanine','azathioprine','atazanavir','atorvastatin','lovastatin','pitavastatin','pravastatin','rosuvastatin','simvastatin','irinotecan','cisplatin') order by name")
         drugs = ["None"] + [row[0] for row in cur.fetchall()]
         selected_drug = drug_col.selectbox("Select Drug", drugs)
 

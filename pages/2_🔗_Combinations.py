@@ -42,7 +42,7 @@ def process_jsonb_columns(df):
             df[col] = df[col].apply(lambda x: ', '.join([f"{k}: {v}" for k, v in x.items()]))
     return df
 
-st.write("In the dropdown menu you can select the gene symbol and diplotype for which you want to get the recommendations. You can also select a drug name (optional) to filter the results by drug name. If you do not select a drug name, the results will be displayed for all drugs. Click on the 'Submit' button to get the results. If you want to see the recommendations specific to a drug, select the drug name and make sure the gene symbol is selected as 'None'")
+st.write("In the dropdown menu you can select the gene symbol and diplotype for which you want to get the recommendations. You can also select a drug name (optional) to filter the results by drug name. If you do not select a drug name, the results will be displayed for all drugs. Click on the 'Submit' button to get the results. If you want to see the recommendations specific to a drug, select the drug name and make sure the gene symbol is selected as 'None' and click on the 'Submit' button.")
 st.write("**Note:** There are various phenotypic combinations that have similar Drug recommendations. The table below lists all of the suggestions for each phenotypic combination. Kindly refer to the results based on your actual phenotype combination.")
 st.markdown('If you need further deatils of the similar recommendations, kindly contact us at [fcb.adnan10@gmail.com](mailto:)')
 
@@ -159,7 +159,7 @@ def main():
         selected_diplotypes = diplotype_col.selectbox("Select Diplotypes", diplotypes)
 
         # Create third dropdown for drugs
-        cur.execute("SELECT DISTINCT name FROM cpic.drug")
+        cur.execute("SELECT DISTINCT name FROM cpic.drug where name IN ('efavirenz','sertraline','trimipramine','lansoprazole','citalopram','clomipramine','escitalopram','doxepin','pantoprazole','imipramine','amitriptyline','omeprazole','dexlansoprazole','fluvastatin','fosphenytoin','phenytoin','celecoxib','lornoxicam','tenoxicam','meloxicam','flurbiprofen','ibuprofen','piroxicam','tamoxifen','tramadol','vortioxetine','codeine','desipramine','paroxetine','atomoxetine','venlafaxine','fluvoxamine','hydrocodone','nortriptyline','tacrolimus','mercaptopurine','thioguanine','azathioprine','atazanavir','atorvastatin','lovastatin','pitavastatin','pravastatin','rosuvastatin','simvastatin','irinotecan','cisplatin') order by name")
         drugs = ["None"] + [row[0] for row in cur.fetchall()]
         selected_drug = drug_col.selectbox("Select Drug", drugs)
 
