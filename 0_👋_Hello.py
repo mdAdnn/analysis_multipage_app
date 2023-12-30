@@ -22,9 +22,6 @@ DATABASE_URL = os.environ.get("db_url")
 # Check if the database URL is set
 if DATABASE_URL is None:
     st.error("DATABASE_URL environment variable is not set.")
-else:
-    # Use the database connection
-    st.success(f"Connected to database")
 
 conn = psycopg2.connect(DATABASE_URL)
 
@@ -58,7 +55,7 @@ if st.button("Sample text file"):
     st.markdown(href, unsafe_allow_html=True)
 
 # Sample data
-if st.button("Sample data"):
+if st.button("Sample Output"):
     # Read input text file
     with open("sample data/input_values.txt", "r") as file:
         input_text = file.read()

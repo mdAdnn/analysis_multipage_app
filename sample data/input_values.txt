@@ -1,4 +1,4 @@
-name: Mohammed Naeem
+name: John Doe
 id: 10005042
 genesymbol,diplotype
 CYP2D6,*19/*38

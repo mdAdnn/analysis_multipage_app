@@ -19,9 +19,6 @@ DATABASE_URL = os.environ.get("db_url")
 # Check if the database URL is set
 if DATABASE_URL is None:
     st.error("DATABASE_URL environment variable is not set.")
-else:
-    # Use the database connection
-    st.success(f"Connected to database")
 
 conn = psycopg2.connect(DATABASE_URL)
 
