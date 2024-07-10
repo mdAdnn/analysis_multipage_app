@@ -23,6 +23,27 @@ DATABASE_URL = os.environ.get("db_url")
 if DATABASE_URL is None:
     st.error("DATABASE_URL environment variable is not set.")
 
+# Function to create a pop-up message for accepting cookies
+def cookie_message():
+    # Display a banner message about cookies
+    st.info("This website uses cookies.")
+
+    # Display a button to accept cookies
+    accepted = st.button("Accept Cookies")
+
+    # If the button is clicked, clear the banner message
+    if accepted:
+        st.empty()
+
+    # If the button is not clicked, display an error message and stop execution
+    else:
+        st.error("Sorry, you did not accept the cookies. The page will not load.")
+        st.stop()
+
+# Display the cookie message
+cookie_message()
+
+
 conn = psycopg2.connect(DATABASE_URL)
 
 # Welcome message
