@@ -47,7 +47,7 @@ cookie_message()
 conn = psycopg2.connect(DATABASE_URL)
 
 # Welcome message
-st.write("# Welcome to PGxAnalyzer")
+st.write("# Welcome to PGxAnalyzer1")
 
 # Sidebar message
 st.sidebar.success("Select a page to begin")
