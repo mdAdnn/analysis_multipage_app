@@ -85,6 +85,10 @@ if st.button("Sample Output"):
     queried_genes = []  # Move the initialization here
 
     # Display name, id, and timestamp at the top
+    if name:
+        st.write(f"**Name:** {name}")
+    else:
+        st.write(f"**Name:** Not Provided")    
     st.write(f"**Name:** {name}")
     st.write(f"**ID:** {user_id}")
     st.write(f"**Timestamp:** {timestamp}")
