@@ -1,5 +1,5 @@
 name: 
-id: 10005042
+id: MD10742
 genesymbol,diplotype
 CYP2D6,*19/*38
 TPMT,*1/*11

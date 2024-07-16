@@ -89,7 +89,6 @@ if st.button("Sample Output"):
         st.write(f"**Name:** {name}")
     else:
         st.write(f"**Name:** Not Provided")    
-    st.write(f"**Name:** {name}")
     st.write(f"**ID:** {user_id}")
     st.write(f"**Timestamp:** {timestamp}")
 
