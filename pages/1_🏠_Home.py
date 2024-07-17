@@ -50,7 +50,7 @@ st.write('''
          To get a better understanding of the system kindly download the sample text file from **"main page"** and upload it on **Home Page**.
 ''')
 st.write('''
-        **Note:** Kindly use a masked 'Name' and 'ID' for confidentiality and security reasons while using real patients data.
+        **Note:** Kindly use only 'ID' for confidentiality and security reasons while using real patients data.
         If there are combinations of phenotypes in the recommendation output file kindly refer next page **'Combinations'** (example for genes such as ***CYP2C19, CYP2B6, TPMT, CYP2D6*** or the drugs such as ***Sertraline, Amitriptyline, Clomipramine, Doxepin*** ) for more detailed recommendations.
 ''')
 
@@ -225,8 +225,6 @@ def main():
         if cur:
             cur.close()
 
-
-
 if uploaded_file is not None:
     # Read the content of the file and decode bytes to string
     file_contents = uploaded_file.read().decode('utf-8')
@@ -246,15 +244,18 @@ if uploaded_file is not None:
     queried_genes = []  # Move the initialization here
 
     # Display name, id, and timestamp at the top
-    st.write(f"**Name:** {name}")
+    if name:
+        st.write(f"**Name:** {name}")
+    else:
+        st.write(f"**Name:** Not Provided")
     st.write(f"**ID:** {user_id}")
     st.write(f"**Timestamp:** {timestamp}")
 
-    # Initialize a list to store gene symbols with strong classification
-    strong_classification_genes = []
-
     # Display the heading outside the loop
     st.write("**Queries with Strong Classification:**")
+
+    # Initialize a list to store gene symbols with strong classification
+    strong_classification_genes = []
 
     for idx, pair in enumerate(pairs, start=1):
         # Check if the pair contains both genesymbol and diplotype
@@ -285,11 +286,8 @@ if uploaded_file is not None:
                 
                     # Add the gene symbol and diplotype as a tuple to the list
                     strong_classification_genes.append((genesymbol, diplotype))
-                
-                # Add a space after each result
-                html_report += "<br>\n"
- 
-
+            
+        html_report += "<br>\n"
 
     # Display the entire HTML report
     st.markdown(html_report, unsafe_allow_html=True)
@@ -307,5 +305,51 @@ if uploaded_file is not None:
 
     st.markdown(disclaimer, unsafe_allow_html=True)
 
+    # Initialize the HTML string for downloading
+    html_report = f"<html><head><style>.report-table {{ border-collapse: collapse; width: 100%; }} .report-table th, .report-table td {{ border: 1px solid #ddd; padding: 8px; }} .report-table th {{ background-color: #ADD8E6; color: black; }}</style></head><body>"
+
+    html_report += f"<div style='display: flex; background-color: #4B4BFF; justify-content: space-between; align-items: center; margin-bottom: 20px;'>"
+    html_report += f"<h2 style='margin-right: 20px; color: purple;'>PGxAnalyzer</h1>"
+    html_report += f"<img src='https://www.hbku.edu.qa/sites/default/files/media/images/hbku_2021.svg' alt='HBKU Logo' style='width: 100px;'>"
+    html_report += f"</div>"
+    html_report += f"<h2>Analysis Report</h2>\n"
+    html_report += f"<p><strong>Name:</strong> {name}</p>\n"
+    html_report += f"<p><strong>ID:</strong> {user_id}</p>\n"
+    html_report += f"<p><strong>Timestamp:</strong> {timestamp}</p>\n"
+    html_report += "</body></html>"
+    html_report += disclaimer
+
+    for idx, pair in enumerate(pairs, start=1):
+        # Check if the pair contains both genesymbol and diplotype
+        if len(pair) == 2:
+            genesymbol, diplotype = pair
+
+            # Execute the SQL query with the provided genesymbol and diplotype
+            result_df = execute_custom_query(genesymbol.strip(), diplotype.strip(), selected_drug="None")
+
+            # Check if the DataFrame is not empty before processing
+            if not result_df.empty:
+                # Process columns with JSONB format to remove {}
+                for col in result_df.columns:
+                    if isinstance(result_df[col][0], dict):
+                        result_df[col] = result_df[col].apply(lambda x: ', '.join([f"{k}: {v}" for k, v in x.items()]))
+
+                # Add the result DataFrame to the HTML report
+                html_report += f"<h3>Results for {genesymbol}, {diplotype}</h3>\n"
+                # Highlight the "name" column if it contains any of the specified drugs
+                html_report += result_df.to_html(index=False, escape=False, classes='report-table', table_id=f'report-table-{genesymbol}_{diplotype}', justify='center') 
+                html_report = html_report.replace('<th>', '<th style="background-color: #ADD8E6; color: black;">')
+                html_report += "\n"
+
+    st.write("#")
+
+    # Add download button for the HTML report
+    st.download_button(
+        label="Download Report",
+        data = html_report,
+        file_name="full_report.html",
+        mime="text/html"
+    )
+   
 if __name__ == "__main__":
     main()

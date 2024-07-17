@@ -44,6 +44,21 @@ st.markdown(
 """
 )
 
+# Add the cookie consent popup script
+cookie_popup = """
+<script type="text/javascript" src="https://cookieconsent.popupsmart.com/src/js/popper.js"></script>
+<script>
+    window.start.init({
+        Palette: "palette2",
+        Mode: "floating right",
+        Theme: "classic",
+        Time: "1",
+    })
+</script>
+"""
+st.markdown(cookie_popup, unsafe_allow_html=True)
+
+
 # Function to create a download link
 if st.button("Sample text file"):
     # Read input text file
@@ -67,7 +82,7 @@ if st.button("Sample Output"):
         return df
     
     st.markdown('''
-        **Note:** The sample data 'Name', 'ID' is for demonstration purposes only. Any resemblance to real persons name is purely coincidental.
+        **Note:** The sample data 'ID' is for demonstration purposes only. Any resemblance to real persons name is purely coincidental.
     ''')
 
     # Extract name, id, and timestamp
