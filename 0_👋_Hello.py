@@ -26,7 +26,7 @@ if DATABASE_URL is None:
 conn = psycopg2.connect(DATABASE_URL)
 
 # Welcome message
-st.write("# Welcome to PGxAnalyzer1")
+st.write("# Welcome to PGxAnalyzer")
 
 # Sidebar message
 st.sidebar.success("Select a page to begin")

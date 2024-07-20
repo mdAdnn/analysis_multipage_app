@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .report-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .report-table th, .report-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .report-table th {
+            background-color: #ADD8E6;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div style="display: flex; background-color: #68BBE3; justify-content: space-between; align-items: center; padding: 10px; border-radius: 10px; margin-bottom: 20px;">
+        <h2 style="margin-right: 20px; color: purple; font-size: 40px;">PGxAnalyzer</h1>
+        <img src="https://www.hbku.edu.qa/sites/default/files/media/images/hbku_2021.svg" alt="HBKU Logo" style="width: 200px;">
+    </div>
+    <h2>Analysis Report</h2>
+    <p><strong>Name:</strong> {{name}}</p>
+    <p><strong>ID:</strong> {{user_id}}</p>
+    <p><strong>Timestamp:</strong> {{timestamp}}</p>
+    {{disclaimer}}
+</body>
+</html>
+

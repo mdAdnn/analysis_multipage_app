@@ -251,11 +251,18 @@ if uploaded_file is not None:
     st.write(f"**ID:** {user_id}")
     st.write(f"**Timestamp:** {timestamp}")
 
-    # Display the heading outside the loop
-    st.write("**Queries with Strong Classification:**")
+    # Initialize a list to store genes with no results
+    genes_with_no_results = []
 
     # Initialize a list to store gene symbols with strong classification
     strong_classification_genes = []
+
+    # Display the queried genes at the beginning
+    st.write("**Queried genes:**")
+    for pair in pairs:
+        if len(pair) == 2:
+            genesymbol, diplotype = pair
+            st.write(f"{genesymbol} {diplotype}")
 
     for idx, pair in enumerate(pairs, start=1):
         # Check if the pair contains both genesymbol and diplotype
@@ -278,15 +285,27 @@ if uploaded_file is not None:
                 html_report += result_df.to_html(index=False, escape=False, classes='report-table', table_id=f'report-table-{genesymbol}_{diplotype}', justify='center') 
                 html_report = html_report.replace('<th>', '<th style="background-color: #ADD8E6; color: black;">')
                 html_report += "\n"
-                
+
                 # Check if the classification is strong
                 if "Strong" in result_df["classification"].values:
-                    # Display the queried genesymbol and diplotype with strong classification
-                    st.write(f"- {genesymbol} {diplotype}")
-                
-                    # Add the gene symbol and diplotype as a tuple to the list
-                    strong_classification_genes.append((genesymbol, diplotype))
-            
+                    # Add the gene symbol and diplotype as a tuple to the list for strong classification
+                    strong_classification_genes.append(f"{genesymbol} {diplotype}")
+            else:
+                # Add the gene symbol and diplotype to a list of genes with no results
+                genes_with_no_results.append(f"{genesymbol}, {diplotype}")
+
+    # Display genes with no results
+    if genes_with_no_results:
+        st.write("**Queries with no result:**")
+        for gene in genes_with_no_results:
+            st.write(gene)
+
+    # Display genes with strong classification
+    if strong_classification_genes:
+        st.write("**Queries with Strong Classification:**")
+        for gene in strong_classification_genes:
+            st.write(gene)
+
         html_report += "<br>\n"
 
     # Display the entire HTML report
@@ -305,19 +324,30 @@ if uploaded_file is not None:
 
     st.markdown(disclaimer, unsafe_allow_html=True)
 
-    # Initialize the HTML string for downloading
-    html_report = f"<html><head><style>.report-table {{ border-collapse: collapse; width: 100%; }} .report-table th, .report-table td {{ border: 1px solid #ddd; padding: 8px; }} .report-table th {{ background-color: #ADD8E6; color: black; }}</style></head><body>"
+    # Function to read the HTML template
+    def read_html_template(file_path):  
+        with open(file_path, 'r') as file:
+            template = file.read()
+        return template
 
-    html_report += f"<div style='display: flex; background-color: #4B4BFF; justify-content: space-between; align-items: center; margin-bottom: 20px;'>"
-    html_report += f"<h2 style='margin-right: 20px; color: purple;'>PGxAnalyzer</h1>"
-    html_report += f"<img src='https://www.hbku.edu.qa/sites/default/files/media/images/hbku_2021.svg' alt='HBKU Logo' style='width: 100px;'>"
-    html_report += f"</div>"
-    html_report += f"<h2>Analysis Report</h2>\n"
-    html_report += f"<p><strong>Name:</strong> {name}</p>\n"
-    html_report += f"<p><strong>ID:</strong> {user_id}</p>\n"
-    html_report += f"<p><strong>Timestamp:</strong> {timestamp}</p>\n"
-    html_report += "</body></html>"
-    html_report += disclaimer
+    # Path to your HTML template
+    template_path = 'index.html'
+
+    # Read the HTML template
+    html_report = read_html_template(template_path)
+
+    # Replace placeholders with actual values
+    html_report = html_report.replace('{{name}}', name)
+    html_report = html_report.replace('{{user_id}}', user_id)
+    html_report = html_report.replace('{{timestamp}}', timestamp)
+    html_report = html_report.replace('{{disclaimer}}', disclaimer)
+    queried_genes_html = "<ul>" + "".join([f"<li>{gene}</li>" for gene in queried_genes]) + "</ul>"
+    no_results_html = "<ul>" + "".join([f"<li>{gene}</li>" for gene in genes_with_no_results]) + "</ul>"
+    strong_classification_html = "<ul>" + "".join([f"<li>{gene}</li>" for gene in strong_classification_genes]) + "</ul>"
+
+    html_report = html_report.replace('{{queried_genes}}', queried_genes_html)
+    html_report = html_report.replace('{{no_results}}', no_results_html)
+    html_report = html_report.replace('{{strong_classification}}', strong_classification_html)
 
     for idx, pair in enumerate(pairs, start=1):
         # Check if the pair contains both genesymbol and diplotype
@@ -337,7 +367,7 @@ if uploaded_file is not None:
                 # Add the result DataFrame to the HTML report
                 html_report += f"<h3>Results for {genesymbol}, {diplotype}</h3>\n"
                 # Highlight the "name" column if it contains any of the specified drugs
-                html_report += result_df.to_html(index=False, escape=False, classes='report-table', table_id=f'report-table-{genesymbol}_{diplotype}', justify='center') 
+                html_report += result_df.to_html(index=False, escape=False, classes='report-table', table_id=f'report-table-{genesymbol}_{diplotype}', justify='center')
                 html_report = html_report.replace('<th>', '<th style="background-color: #ADD8E6; color: black;">')
                 html_report += "\n"
 
