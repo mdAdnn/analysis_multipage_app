@@ -1,7 +1,6 @@
 name: 
 id: MD10742
 genesymbol,diplotype
-CYP2D6,*1/*1
 SLCO1B1,*1/*1
 CYP2B6,*5/*38
 CYP3A5,*6/*7

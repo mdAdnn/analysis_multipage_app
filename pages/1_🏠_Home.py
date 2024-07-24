@@ -72,7 +72,6 @@ def execute_custom_query(selected_gene_symbol, selected_diplotypes, selected_dru
         # Construct the SQL query for gene symbol, diplotypes, and drug
         sql_query = f"""
             SELECT DISTINCT ON (p.drugid)
-                dp.diplotype,
                 r.activityscore,
                 r.phenotypes,
                 dp.ehrpriority,
@@ -99,7 +98,6 @@ def execute_custom_query(selected_gene_symbol, selected_diplotypes, selected_dru
         # Construct the SQL query for gene symbol and diplotypes without filtering by drug name
         sql_query = f"""
             SELECT DISTINCT ON (p.drugid)
-                dp.diplotype,
                 r.activityscore,
                 r.phenotypes,
                 dp.ehrpriority,
@@ -280,7 +278,12 @@ if uploaded_file is not None:
                         result_df[col] = result_df[col].apply(lambda x: ', '.join([f"{k}: {v}" for k, v in x.items()]))
 
                 # Add the result DataFrame to the HTML report
-                html_report += f"<h3>Results for {genesymbol}, {diplotype}</h3>\n"
+                html_report += f"""
+<div>
+    <h4><strong>Gene:</strong> {genesymbol}</h4>
+    <h4><strong>Diplotype:</strong> {diplotype}</h4>
+</div>
+"""
                 # Highlight the "name" column if it contains any of the specified drugs
                 html_report += result_df.to_html(index=False, escape=False, classes='report-table', table_id=f'report-table-{genesymbol}_{diplotype}', justify='center') 
                 html_report = html_report.replace('<th>', '<th style="background-color: #ADD8E6; color: black;">')
@@ -307,7 +310,8 @@ if uploaded_file is not None:
             st.write(gene)
 
         html_report += "<br>\n"
-
+    
+    st.write("#")
     # Display the entire HTML report
     st.markdown(html_report, unsafe_allow_html=True)
     st.write("#")
@@ -365,7 +369,12 @@ if uploaded_file is not None:
                         result_df[col] = result_df[col].apply(lambda x: ', '.join([f"{k}: {v}" for k, v in x.items()]))
 
                 # Add the result DataFrame to the HTML report
-                html_report += f"<h3>Results for {genesymbol}, {diplotype}</h3>\n"
+                html_report += f"""
+<div style="font-size: 20px; background-color: #68BBE3">
+    <p><strong>Gene:</strong> {genesymbol}</p>
+    <p><strong>Diplotype:</strong> {diplotype}</p>
+</div>
+"""
                 # Highlight the "name" column if it contains any of the specified drugs
                 html_report += result_df.to_html(index=False, escape=False, classes='report-table', table_id=f'report-table-{genesymbol}_{diplotype}', justify='center')
                 html_report = html_report.replace('<th>', '<th style="background-color: #ADD8E6; color: black;">')
