@@ -146,22 +146,27 @@ def main():
 
         # Query to get all unique gene symbols from cpic.gene_result table
         cur.execute("SELECT DISTINCT genesymbol FROM cpic.gene_result WHERE genesymbol IN ('CYP2C9', 'SLCO1B1', 'CYP2D6', 'TPMT', 'CYP2B6', 'CYP3A5', 'NUDT15', 'UGT1A1', 'CYP2C19')")
-        gene_symbols = ["None"] + [row[0] for row in cur.fetchall()]
+        gene_symbols = ["None"] + sorted([row[0] for row in cur.fetchall()])
 
-        # Create the first dropdown for gene symbols
-        selected_gene_symbol = gene_col.selectbox("Select Gene Symbol", gene_symbols)
-
+        # Create the second popover for simplified diplotypes related to the selected gene symbol
+        with st.expander("Select Gene Symbol"):
+            selected_gene_symbol = gene_col.selectbox("Select Gene Symbol", gene_symbols)
+        
         # Query to get all unique diplotypes for the selected gene symbol from cpic.diplotype_phenotype table
         cur.execute(f"SELECT DISTINCT diplotype->>'{selected_gene_symbol}' AS simplified_diplotype FROM cpic.diplotype_phenotype WHERE jsonb_exists(diplotype, '{selected_gene_symbol}')")
-        diplotypes = [row[0] for row in cur.fetchall()]
+        diplotypes = ["None"] + sorted([row[0] for row in cur.fetchall()])
 
-        # Create the second dropdown for simplified diplotypes related to the selected gene symbol
-        selected_diplotypes = diplotype_col.selectbox("Select Diplotypes", diplotypes)
+        # Create the second popover for simplified diplotypes related to the selected gene symbol
+        with st.expander("Select Diplotypes"):
+            selected_diplotypes = diplotype_col.selectbox("Diplotypes", diplotypes)
 
         # Create third dropdown for drugs
         cur.execute("SELECT DISTINCT name FROM cpic.drug where name IN ('efavirenz','sertraline','trimipramine','lansoprazole','citalopram','clomipramine','escitalopram','doxepin','pantoprazole','imipramine','amitriptyline','omeprazole','dexlansoprazole','fluvastatin','fosphenytoin','phenytoin','celecoxib','lornoxicam','tenoxicam','meloxicam','flurbiprofen','ibuprofen','piroxicam','tamoxifen','tramadol','vortioxetine','codeine','desipramine','paroxetine','atomoxetine','venlafaxine','fluvoxamine','hydrocodone','nortriptyline','tacrolimus','mercaptopurine','thioguanine','azathioprine','atazanavir','atorvastatin','lovastatin','pitavastatin','pravastatin','rosuvastatin','simvastatin','irinotecan','cisplatin') order by name")
-        drugs = ["None"] + [row[0] for row in cur.fetchall()]
-        selected_drug = drug_col.selectbox("Select Drug", drugs)
+        drugs = ["None"] + sorted([row[0] for row in cur.fetchall()])
+
+        # Create the third dropdown for drugs
+        with st.expander("Select Drug"):
+            selected_drug = drug_col.selectbox("Select Drug", drugs)
 
         # Add a submit button
         if diplotype_col.button("Submit"):

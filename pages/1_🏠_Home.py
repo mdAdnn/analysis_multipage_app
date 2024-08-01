@@ -34,6 +34,16 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# Initialize session state
+if 'selected_gene_symbol' not in st.session_state:
+    st.session_state.selected_gene_symbol = "None"
+if 'selected_diplotype' not in st.session_state:
+    st.session_state.selected_diplotype = "None"
+if 'selected_drug' not in st.session_state:
+    st.session_state.selected_drug = "None"
+if 'result_df' not in st.session_state:
+    st.session_state.result_df = pd.DataFrame()
+
 # File uploader and select boxes in a single row
 file_col, gene_col, diplotype_col, drug_col = st.columns([4, 2, 2, 2])
 
@@ -158,22 +168,36 @@ def main():
 
         # Query to get all unique gene symbols from cpic.gene_result table
         cur.execute("SELECT DISTINCT genesymbol FROM cpic.gene_result WHERE genesymbol IN ('CYP2C9', 'SLCO1B1', 'CYP2D6', 'TPMT', 'CYP2B6', 'CYP3A5', 'NUDT15', 'UGT1A1', 'CYP2C19')")
-        gene_symbols = ["None"] + [row[0] for row in cur.fetchall()]
+        gene_symbols = ["None"] + sorted([row[0] for row in cur.fetchall()])
 
-        # Create the first dropdown for gene symbols
-        selected_gene_symbol = gene_col.selectbox("Select Gene Symbol", gene_symbols)
-
+        # Create the second popover for simplified diplotypes related to the selected gene symbol
+        with st.expander("Select Gene Symbol"):
+            selected_gene_symbol = gene_col.selectbox("Select Gene Symbol", gene_symbols, key='selected_gene_symbol')
+        
+        if st.session_state.selected_gene_symbol != selected_gene_symbol:
+            st.session_state.selected_gene_symbol = selected_gene_symbol
+        
         # Query to get all unique diplotypes for the selected gene symbol from cpic.diplotype_phenotype table
         cur.execute(f"SELECT DISTINCT diplotype->>'{selected_gene_symbol}' AS simplified_diplotype FROM cpic.diplotype_phenotype WHERE jsonb_exists(diplotype, '{selected_gene_symbol}')")
-        diplotypes = [row[0] for row in cur.fetchall()]
+        diplotypes = ["None"] + sorted([row[0] for row in cur.fetchall()])
+        st.session_state.diplotypes = diplotypes
 
-        # Create the second dropdown for simplified diplotypes related to the selected gene symbol
-        selected_diplotypes = diplotype_col.selectbox("Select Diplotypes", diplotypes)
+        # Create the third dropdown for diplotypes
+        with st.expander("Select Diplotype"):
+            selected_diplotypes = diplotype_col.selectbox("Select Diplotype", diplotypes, key='selected_diplotypes')
+        
+        if st.session_state.selected_diplotypes != selected_diplotypes:
+            st.session_state.selected_diplotypes = selected_diplotypes
 
-        # Create third dropdown for drugs
-        cur.execute("SELECT DISTINCT name FROM cpic.drug where name IN ('efavirenz','sertraline','trimipramine','lansoprazole','citalopram','clomipramine','escitalopram','doxepin','pantoprazole','imipramine','amitriptyline','omeprazole','dexlansoprazole','fluvastatin','fosphenytoin','phenytoin','celecoxib','lornoxicam','tenoxicam','meloxicam','flurbiprofen','ibuprofen','piroxicam','tamoxifen','tramadol','vortioxetine','codeine','desipramine','paroxetine','atomoxetine','venlafaxine','fluvoxamine','hydrocodone','nortriptyline','tacrolimus','mercaptopurine','thioguanine','azathioprine','atazanavir','atorvastatin','lovastatin','pitavastatin','pravastatin','rosuvastatin','simvastatin','irinotecan','cisplatin') order by name")
-        drugs = ["None"] + [row[0] for row in cur.fetchall()]
-        selected_drug = drug_col.selectbox("Select Drug", drugs)
+        # Query to get all unique drugs
+        cur.execute("SELECT DISTINCT name FROM cpic.drug WHERE name IN ('efavirenz','sertraline','trimipramine','lansoprazole','citalopram','clomipramine','escitalopram','doxepin','pantoprazole','imipramine','amitriptyline','omeprazole','dexlansoprazole','fluvastatin','fosphenytoin','phenytoin','celecoxib','lornoxicam','tenoxicam','meloxicam','flurbiprofen','ibuprofen','piroxicam','tamoxifen','tramadol','vortioxetine','codeine','desipramine','paroxetine','atomoxetine','venlafaxine','fluvoxamine','hydrocodone','nortriptyline','tacrolimus','mercaptopurine','thioguanine','azathioprine','atazanavir','atorvastatin','lovastatin','pitavastatin','pravastatin','rosuvastatin','simvastatin','irinotecan','cisplatin') ORDER BY name")
+        drugs = ["None"] + sorted([row[0] for row in cur.fetchall()])
+
+        # Create the third dropdown for drugs
+        with st.expander("Select Drug"):
+            selected_drug = drug_col.selectbox("Select Drug", drugs, key='selected_drug')
+            if st.session_state.selected_drug != selected_drug:
+                st.session_state.selected_drug = selected_drug
 
         # Add a submit button
         if diplotype_col.button("Submit"):
@@ -182,6 +206,8 @@ def main():
 
             # Check if the DataFrame is not empty before processing
             if not result_df.empty:
+                # Sort the DataFrame by the 'name' column
+                result_df = result_df.sort_values(by='name')
                 # Process JSONB columns
                 result_df = process_jsonb_columns(result_df)
 
@@ -370,7 +396,7 @@ if uploaded_file is not None:
 
                 # Add the result DataFrame to the HTML report
                 html_report += f"""
-<div style="font-size: 20px; background-color: #68BBE3">
+<div style="font-size: 20px;">
     <p><strong>Gene:</strong> {genesymbol}</p>
     <p><strong>Diplotype:</strong> {diplotype}</p>
 </div>
