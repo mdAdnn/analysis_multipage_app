@@ -5,8 +5,8 @@ from datetime import datetime
 import base64
 import os
 from dotenv import load_dotenv
-import streamlit.components.v1 as components
 from streamlit_modal import modal
+import streamlit.components.v1 as components
 
 # Load environment variables from .env
 load_dotenv(".env")
