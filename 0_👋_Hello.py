@@ -5,7 +5,7 @@ from datetime import datetime
 import base64
 import os
 from dotenv import load_dotenv
-from streamlit_modal import modal
+from streamlit_modal import Modal
 import streamlit.components.v1 as components
 
 # Load environment variables from .env
@@ -22,7 +22,7 @@ st.set_page_config(
 DATABASE_URL = os.environ.get("db_url")
 
 # Create a modal for cookie consent
-cookie_modal = modal(
+cookie_modal = Modal(
     "Cookie Consent", 
     key="cookie-modal",
     padding=20,    # default value
