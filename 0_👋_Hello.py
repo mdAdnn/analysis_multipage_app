@@ -20,6 +20,11 @@ st.set_page_config(
 
 # Retrieve the DATABASE_URL from the environment
 DATABASE_URL = os.environ.get("db_url")
+# Check if the database URL is set
+if DATABASE_URL is None:
+    st.error("DATABASE_URL environment variable is not set.")
+
+conn = psycopg2.connect(DATABASE_URL)
 
 # Create a modal for cookie consent
 cookie_modal = Modal(
