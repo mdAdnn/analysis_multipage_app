@@ -5,7 +5,6 @@ from datetime import datetime
 import base64
 import os
 from dotenv import load_dotenv
-from streamlit_modal import Modal
 import streamlit.components.v1 as components
 
 # Load environment variables from .env
@@ -25,35 +24,6 @@ if DATABASE_URL is None:
     st.error("DATABASE_URL environment variable is not set.")
 
 conn = psycopg2.connect(DATABASE_URL)
-
-# Create a modal for cookie consent
-cookie_modal = Modal(
-    "Cookie Consent", 
-    key="cookie-modal",
-    padding=20,    # default value
-    max_width=744  # default value
-)
-
-# Open the modal when the page loads
-if 'cookie_modal_opened' not in st.session_state:
-    st.session_state.cookie_modal_opened = True
-    cookie_modal.open()
-
-# Display the modal content
-if cookie_modal.is_open():
-    with cookie_modal.container():
-        st.write("""
-        ### We Value Your Privacy
-        
-        We use cookies to improve your experience on our website. By using our site, you consent to the use of cookies.
-        
-        - **Necessary Cookies:** These are essential for the website to function properly.
-        - **Functional Cookies:** These help us remember your preferences and enhance your experience.
-        
-        """)
-        if st.button("Accept"):
-            cookie_modal.close()
-            st.session_state.cookie_modal_opened = False
 
 # Check if the database URL is set
 if DATABASE_URL is None:
